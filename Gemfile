@@ -49,15 +49,4 @@ group :development, :test do
   gem 'rspec-rails', '~> 5.0.0'
 end
 
-
-gem 'rack-cors'
-
-# Initializer
-Rails.application.config.middleware.insert_before 0, Rack::Cors do
-  allow do
-    origins '*'
-    resource '*',
-      headers: :any,
-      methods: [:get, :post, :put, :patch, :delete, :options, :head]
-  end
-end
+gem 'rack-cors', require: 'rack/cors'
