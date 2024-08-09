@@ -6,19 +6,17 @@ jobs:
       - image: circleci/ruby:2.7.1-node-browsers
     steps:
       - checkout
-      - run: docker build -t $DOCKER_USERNAME/todolist .
-      - run: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      - run: docker push $DOCKER_USERNAME/todolist
+      - run: echo "hello"
 
   deploy:
     docker:
       - image: circleci/ruby:2.7.1-node-browsers
     steps:
-      - run: ./deploy.sh
+      - run: echo "world"
 
 workflows:
   version: 2
-  build_and_deploy:
+  test_and_deploy:
     jobs:
       - build
       - deploy:
