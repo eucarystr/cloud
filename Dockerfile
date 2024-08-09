@@ -10,7 +10,7 @@ RUN bundle install
 
 
 COPY . .
-
+EXPOSE 3000
 
 RUN RAILS_ENV=production bundle exec rake assets:precompile
 RUN RAILS_ENV=production bundle exec rake db:migrate

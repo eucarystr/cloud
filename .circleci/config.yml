@@ -1,18 +1,42 @@
 version: 2.1
 
-jobs:
-  build:
+executors:
+  ruby-executor:
     docker:
       - image: circleci/ruby:2.7.1-node-browsers
+
+jobs:
+  build:
+    executor: ruby-executor
     steps:
       - checkout
-      - run: echo "hello"
+      - run:
+          name: Install Dependencies
+          command: |
+            gem install bundler
+            bundle install
+            # Run tests if you have them
+            # bundle exec rspec
+      - run:
+          name: Build Docker Image
+          command: docker build -t your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM .
 
   deploy:
     docker:
-      - image: circleci/ruby:2.7.1-node-browsers
+      - image: circleci/python:3.8  # Use a different image if necessary
     steps:
-      - run: echo "world"
+      - checkout
+      - run:
+          name: Deploy to EC2
+          command: |
+            echo "$AWS_SECRET_ACCESS_KEY" | docker login -u "$AWS_ACCESS_KEY_ID" --password-stdin
+            docker push your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM
+            ssh -i "$EC2_SSH_KEY" ec2-user@ec2-54-171-178-17.eu-west-1.compute.amazonaws.com << 'EOF'
+              docker pull your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM
+              docker stop your_container_name || true
+              docker rm your_container_name || true
+              docker run -d --name your_container_name -p 3000:3000 your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM
+            EOF
 
 workflows:
   version: 2
