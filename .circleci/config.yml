@@ -1,0 +1,27 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers
+    steps:
+      - checkout
+      - run: echo "hello"
+
+  deploy:
+    docker:
+      - image: circleci/ruby:2.7.1-node-browsers
+    steps:
+      - run: echo "world"
+
+workflows:
+  version: 2
+  test_and_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
