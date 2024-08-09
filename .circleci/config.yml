@@ -1,46 +1,40 @@
 version: 2.1
 
 executors:
-  ruby-executor:
+  docker-executor:
     docker:
       - image: circleci/ruby:2.7.1-node-browsers
 
 jobs:
   build:
-    executor: ruby-executor
+    executor: docker-executor
     steps:
       - checkout
       - run:
-          name: Install Dependencies
-          command: |
-            gem install bundler
-            bundle install
-            # Run tests if you have them
-            # bundle exec rspec
-      - run:
           name: Build Docker Image
-          command: docker build -t your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM .
+          command: |
+            cd project_management_app
+            docker build -t $DOCKER_USERNAME/todolist .
+      - run:
+          name: Log in to DockerHub
+          command: |
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - run:
+          name: Push Docker Image
+          command: |
+            docker push $DOCKER_USERNAME/todolist
 
   deploy:
     docker:
-      - image: circleci/python:3.8  # Use a different image if necessary
+      - image: circleci/ruby:2.7.1-node-browsers
     steps:
-      - checkout
       - run:
           name: Deploy to EC2
-          command: |
-            echo "$AWS_SECRET_ACCESS_KEY" | docker login -u "$AWS_ACCESS_KEY_ID" --password-stdin
-            docker push your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM
-            ssh -i "$EC2_SSH_KEY" ec2-user@ec2-54-171-178-17.eu-west-1.compute.amazonaws.com << 'EOF'
-              docker pull your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM
-              docker stop your_container_name || true
-              docker rm your_container_name || true
-              docker run -d --name your_container_name -p 3000:3000 your_dockerhub_username/todolist:$CIRCLE_BUILD_NUM
-            EOF
+          command: ./deploy.sh
 
 workflows:
   version: 2
-  test_and_deploy:
+  build_and_deploy:
     jobs:
       - build
       - deploy:
