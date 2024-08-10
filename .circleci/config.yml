@@ -9,6 +9,7 @@ jobs:
   build:
     executor: docker-executor
     steps:
+      - setup_remote_docker
       - checkout
       - run:
           name: Build Docker Image
