@@ -9,15 +9,13 @@ jobs:
   build:
     executor: docker-executor
     steps:
-      - checkout
+      - checkout  # This checks out your code into the working directory
       - setup_remote_docker:
           version: 20.10.7
           docker_layer_caching: true
       - run:
           name: Build Docker Image
           command: |
-            cd /System/Volumes/Data/Users/eucarys/Documents/GitHub/cloud/project_management_app
-
             docker build -t $DOCKER_USERNAME/todolist .
       - run:
           name: Log in to DockerHub
