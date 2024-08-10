@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            cd /workspace/project_management_app
+            cd /var/www/project_management_app
             docker build -t $DOCKER_USERNAME/todolist .
       - run:
           name: Log in to DockerHub
