@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css'; // Ensure your CSS file is linked
+import './App.css'; 
 
 function App() {
   const [projects, setProjects] = useState([]);
