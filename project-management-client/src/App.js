@@ -4,9 +4,9 @@ import './App.css';
 
 function App() {
   const [projects, setProjects] = useState([]);
-  const [currentAction, setCurrentAction] = useState('list'); // 'list', 'add', 'edit', 'detail'
+  const [currentAction, setCurrentAction] = useState('list'); 
   const [selectedProject, setSelectedProject] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(''); // State for success message
+  const [successMessage, setSuccessMessage] = useState(''); 
 
   // Fetch all projects
   useEffect(() => {
@@ -22,7 +22,7 @@ function App() {
         setProjects([...projects, response.data]);
         setCurrentAction('list');
         setSuccessMessage('Project added successfully!');
-        setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
+        setTimeout(() => setSuccessMessage(''), 3000); 
       })
       .catch(error => console.error('Error adding project:', error));
   };
@@ -36,7 +36,7 @@ function App() {
         ));
         setCurrentAction('list');
         setSuccessMessage('Project updated successfully!');
-        setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
+        setTimeout(() => setSuccessMessage(''), 3000); 
       })
       .catch(error => console.error('Error updating project:', error));
   };
@@ -48,7 +48,7 @@ function App() {
         setProjects(projects.filter(proj => proj.id !== projectId));
         setCurrentAction('list');
         setSuccessMessage('Project deleted successfully!');
-        setTimeout(() => setSuccessMessage(''), 3000); // Clear message after 3 seconds
+        setTimeout(() => setSuccessMessage(''), 3000); 
       })
       .catch(error => console.error('Error deleting project:', error));
   };
